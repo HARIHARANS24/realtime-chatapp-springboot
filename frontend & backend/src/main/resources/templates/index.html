@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App | SwiftChat</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: #fff;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .chat-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .users-list {
+            background-color: rgba(255, 255, 255, 0.08);
+            height: 100%;
+        }
+
+        .user-item {
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .user-item:hover, .user-item.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .chat-messages {
+            overflow-y: auto;
+            height: 400px;
+            padding: 15px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            position: relative;
+            display: inline-block;
+        }
+
+        .message.sender {
+            background-color: #4b7bec;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .message.receiver {
+            background-color: #f1f2f6;
+            color: #2f3542;
+            align-self: flex-start;
+            margin-right: auto;
+        }
+
+        .form-control {
+            background-color: #f1f2f6;
+            border: none;
+            border-radius: 20px;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+        }
+
+        .btn-primary {
+            background-color: #4b7bec;
+            border: none;
+            border-radius: 20px;
+        }
+
+        .btn-primary:hover {
+            background-color: #3867d6;
+        }
+
+        .navbar-custom {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link,
+        .navbar-custom i {
+            color: #ffffff;
+        }
+
+        .footer {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            color: #ffffff;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .typing {
+            font-style: italic;
+            font-size: 0.9rem;
+            color: #ced6e0;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                width: 100% !important;
+                border-radius: 0;
+            }
+
+            .users-list {
+                display: none;
+            }
+
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-custom py-2 fixed-top">
+    <div class="container-fluid d-flex justify-content-between">
+        <a class="navbar-brand" href="#">SwiftChat</a>
+        <div class="social-icons">
+            <a href="/logout" id="logout" title="Logout"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Container -->
+<div class="container-fluid vh-100 d-flex justify-content-center align-items-center pt-5">
+    <div class="row w-100 w-md-75 chat-container" style="height: 600px;">
+        <!-- Sidebar Users -->
+        <div class="col-md-3 users-list p-3">
+            <h5 class="text-white mb-3">Online Users</h5>
+            <ul id="connectedUsers" class="list-unstyled overflow-auto" style="max-height: 500px;"></ul>
+            <div class="mt-auto text-white fw-bold">Logged in as: <span id="connected-user-fullname"></span></div>
+        </div>
+
+        <!-- Chat Section -->
+        <div class="col-md-9 d-flex flex-column chat-box p-3">
+            <div id="chat-messages" class="chat-messages flex-grow-1 border rounded mb-3 d-flex flex-column"></div>
+            <div class="typing" id="typing-indicator" style="display: none;">User is typing...</div>
+            <form id="messageForm" name="messageForm" class="d-flex" style="display: none;">
+                <input type="text" id="message" class="form-control me-2" placeholder="Type a message..." autocomplete="off">
+                <button type="submit" class="btn btn-primary px-4">Send</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    &copy; 2025 . All rights reserved SwiftChat. | <a href="#" class="custom-link text-decoration-none">Privacy Policy</a>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    const messageForm = document.querySelector('#messageForm');
+    const messageInput = document.querySelector('#message');
+    const chatArea = document.querySelector('#chat-messages');
+    const logout = document.querySelector('#logout');
+    const typingIndicator = document.getElementById('typing-indicator');
+    let selectedUserId = null;
+    let stompClient = null;
+    const username = '[[${username}]]';
+    const notificationState = {};
+
+    function connect(event) {
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, onConnected);
+        event?.preventDefault();
+    }
+
+    function onConnected() {
+        stompClient.subscribe(`/user/${username}/queue/messages`, onMessageReceived);
+        stompClient.send("/app/user.addUser", {}, JSON.stringify({ username: username, status: 'ONLINE' }));
+        document.querySelector('#connected-user-fullname').textContent = username;
+        findAndDisplayConnectedUsers();
+    }
+
+    async function findAndDisplayConnectedUsers() {
+        const res = await fetch('/users');
+        let users = await res.json();
+        users = users.filter(user => user.username !== username);
+        const list = document.getElementById('connectedUsers');
+        list.innerHTML = '';
+        users.forEach(user => {
+            const item = document.createElement('li');
+            item.classList.add('user-item', 'p-2', 'rounded', 'mb-2');
+            item.id = user.username;
+            item.innerHTML = `
+                <i class="fas fa-user-circle me-2"></i> ${user.username}
+                <span class="badge bg-danger float-end" id="notify-${user.username}" style="display: none;">New</span>`;
+            item.addEventListener('click', userItemClick);
+            list.appendChild(item);
+        });
+    }
+
+    function userItemClick(event) {
+        document.querySelectorAll('.user-item').forEach(i => i.classList.remove('active'));
+        const item = event.currentTarget;
+        item.classList.add('active');
+        selectedUserId = item.id;
+        messageForm.style.display = 'flex';
+        document.getElementById(`notify-${selectedUserId}`).style.display = 'none';
+        delete notificationState[selectedUserId];
+        fetchAndDisplayUserChat();
+    }
+
+    async function fetchAndDisplayUserChat() {
+        const res = await fetch(`/messages/${username}/${selectedUserId}`);
+        const messages = await res.json();
+        chatArea.innerHTML = '';
+        messages.forEach(msg => displayMessage(msg.senderId, msg.content));
+    }
+
+    function displayMessage(senderId, content) {
+        const msg = document.createElement('div');
+        msg.classList.add('message');
+        msg.classList.add(senderId === username ? 'sender' : 'receiver');
+        msg.textContent = content;
+        chatArea.appendChild(msg);
+        chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function sendMessage(event) {
+        event.preventDefault();
+        const content = messageInput.value.trim();
+        if (content && stompClient) {
+            const chatMessage = {
+                senderId: username,
+                receiverId: selectedUserId,
+                content: content,
+                timestamp: new Date()
+            };
+            stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
+            displayMessage(username, content);
+            messageInput.value = '';
+        }
+    }
+
+    function onMessageReceived(payload) {
+        const message = JSON.parse(payload.body);
+        if (selectedUserId !== message.senderId) {
+            notificationState[message.senderId] = true;
+            document.getElementById(`notify-${message.senderId}`)?.style.setProperty('display', 'inline-block');
+        } else {
+            displayMessage(message.senderId, message.content);
+        }
+    }
+
+    function onLogout() {
+        stompClient.send("/app/user.disconnectUser", {}, JSON.stringify({ username: username, status: 'OFFLINE' }));
+        window.location.href = "/logout";
+    }
+
+    // Typing indicator (bonus feature)
+    messageInput.addEventListener('input', () => {
+        typingIndicator.style.display = 'block';
+        clearTimeout(typingIndicator.timeout);
+        typingIndicator.timeout = setTimeout(() => {
+            typingIndicator.style.display = 'none';
+        }, 1000);
+    });
+
+    messageForm.addEventListener('submit', sendMessage);
+    logout.addEventListener('click', onLogout);
+    connect();
+</script>
+</body>
+</html>
