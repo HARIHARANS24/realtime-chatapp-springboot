@@ -6,7 +6,7 @@ A modern real-time chat application built with Spring Boot and WebSocket technol
 
 - 💬 Real-time messaging using WebSocket
 - 👥 Group chat functionality
-- ⌨️ Typing indicators
+- ⌨️ Typing indicators 
 - 🟢 Online/Offline status
 - 🔒 Secure authentication
 - 📱 Responsive design
