@@ -9,7 +9,7 @@ A modern real-time chat application built with Spring Boot and WebSocket technol
 - ⌨️ Typing indicators  
 - 🟢 Online/Offline status
 - 🔒 Secure authentication 
-- 📱 Responsive design  
+- 📱 Responsive design   
 - 🔄 Message persistence 
 - 🎨 Modern UI/UX
 
