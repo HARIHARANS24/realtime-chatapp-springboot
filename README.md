@@ -15,7 +15,7 @@ A modern real-time chat application built with Spring Boot and WebSocket technol
  
 ## 🛠️ Tech Stack
 
-- **Backend:**
+- **Backend:** 
   - Spring Boot
   - WebSocket
   - STOMP Protocol
