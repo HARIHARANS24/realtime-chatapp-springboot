@@ -32,45 +32,74 @@ A modern real-time chat application built with Spring Boot and WebSocket technol
 ## 📁 Project Structure
 
 ```
-📦 realtime-chatapp-springboot
- ┣ 📂 .mvn
- ┣ 📂 src
- ┃ ┣ 📂 main
- ┃ ┃ ┣ 📂 java
- ┃ ┃ ┃ ┗ 📂 com
- ┃ ┃ ┃ ┃ ┗ 📂 example
- ┃ ┃ ┃ ┃ ┃ ┗ 📂 chattingapp
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂 config
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜 WebSocketConfig.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜 SecurityConfig.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂 controller
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜 ChatController.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜 AccountController.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂 model
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜 Account.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜 ChatRoom.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜 Message.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜 Notification.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜 Status.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂 repository
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜 AccountRepository.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜 ChatRoomRepository.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜 MessageRepository.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂 service
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜 AccountService.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜 ChatRoomService.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜 MessageService.java
- ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜 ChatappApplication.java
- ┃ ┃ ┣ 📂 resources
- ┃ ┃ ┃ ┣ 📂 static
- ┃ ┃ ┃ ┣ 📂 templates
- ┃ ┃ ┃ ┗ 📜 application.properties
- ┃ ┣ 📂 test
- ┣ 📜 pom.xml
- ┣ 📜 mvnw
- ┣ 📜 mvnw.cmd
- ┣ 📜 .gitignore
- ┗ 📜 README.md
+Directory structure:
+└── hariharans24-realtime-chatapp-springboot/
+    ├── README.md
+    ├── LICENSE
+    └── frontend & backend/
+        ├── mvnw
+        ├── mvnw.cmd
+        ├── pom.xml
+        ├── src/
+        │   ├── main/
+        │   │   ├── java/
+        │   │   │   └── com/
+        │   │   │       └── example/
+        │   │   │           └── chattingapp/
+        │   │   │               ├── ChatappApplication.java
+        │   │   │               ├── config/
+        │   │   │               │   ├── SecurityConfig.java
+        │   │   │               │   └── WebSocketConfig.java
+        │   │   │               ├── controller/
+        │   │   │               │   ├── AccountController.java
+        │   │   │               │   └── ChatController.java
+        │   │   │               ├── model/
+        │   │   │               │   ├── Account.java
+        │   │   │               │   ├── ChatRoom.java
+        │   │   │               │   ├── Message.java
+        │   │   │               │   ├── Notification.java
+        │   │   │               │   └── Status.java
+        │   │   │               ├── repository/
+        │   │   │               │   ├── AccountRepository.java
+        │   │   │               │   ├── ChatRoomRepository.java
+        │   │   │               │   └── MessageRepository.java
+        │   │   │               └── service/
+        │   │   │                   ├── AccountService.java
+        │   │   │                   ├── ChatRoomService.java
+        │   │   │                   └── MessageService.java
+        │   │   └── resources/
+        │   │       ├── application.properties
+        │   │       ├── static/
+        │   │       │   └── sql-script/
+        │   │       │       └── SQLScript.txt
+        │   │       └── templates/
+        │   │           ├── index.html
+        │   │           ├── login.html
+        │   │           └── register.html
+        │   └── test/
+        │       └── java/
+        │           └── com/
+        │               └── example/
+        │                   └── chattingapp/
+        │                       └── ChatappApplicationTests.java
+        └── target/
+            └── classes/
+                ├── application.properties
+                ├── com/
+                │   └── example/
+                │       └── chattingapp/
+                │           ├── config/
+                │           ├── controller/
+                │           ├── model/
+                │           ├── repository/
+                │           └── service/
+                ├── static/
+                │   └── sql-script/
+                │       └── SQLScript.txt
+                └── templates/
+                    ├── index.html
+                    ├── login.html
+                    └── register.html
 ```
 
 ## 🚀 Getting Started
